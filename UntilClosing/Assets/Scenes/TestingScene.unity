@@ -460,7 +460,7 @@ MonoBehaviour:
   moveSpeed: 7
   groundDrag: 5
   airMovementMulti: 0.4
-  jumpForce: 10
+  jumpForce: 12
   jumpCD: 0.25
   playerHeight: 2
   whatIsGround:
