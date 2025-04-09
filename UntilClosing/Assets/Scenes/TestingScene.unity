@@ -175,7 +175,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5f58c1f5c74e03a41bd64c5c3c9bb51e, type: 2}
+  - {fileID: 2100000, guid: ef43df3d28472a8448e71c9fadce34e4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -456,12 +456,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jumpKey: 32
-  diveKey: 101
-  moveSpeed: 7
+  moveSpeed: 12
   groundDrag: 5
-  airMovementMulti: 0.4
-  jumpForce: 12
+  airMovementMulti: 1
+  gravityScale: 8
+  jumpForce: 40
   jumpCD: 0.25
+  diveForce: 0
   playerHeight: 2
   whatIsGround:
     serializedVersion: 2
