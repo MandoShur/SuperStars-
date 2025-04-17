@@ -692,9 +692,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: def8e22d00caa60488decc07786bdde9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _grounded: 0
   jumpKey: 32
   diveKey: 101
-  moveSpeed: 12
+  moveSpeed: 15
   groundDrag: 5
   airMovementMulti: 1
   gravityScale: 8.5
@@ -702,12 +703,14 @@ MonoBehaviour:
   AccelerationRate: 0.2
   jumpForce: 40
   jumpCD: 0.25
-  diveForce: 50
+  readyToJump: 1
+  diveForce: 30
   playerHeight: 2
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
   orientation: {fileID: 2124536255}
+  playerObject: {fileID: 2075271806}
   rb: {fileID: 0}
 --- !u!1 &948247348
 GameObject:

@@ -32,3 +32,4 @@ public class ShowSpeed : MonoBehaviour
         }
     }
 }
+//this is more of a debugging script than anything

@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
+using System.ComponentModel;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     //unaccessables and things youre not supposed to edit at all DO NOT EDIT THESE OR YOU EXPLODE VIOLENTLY(and code messes up but thats not important)
-    private bool _grounded; 
+    [SerializeField] private bool _grounded; 
     private float baseGravityScale;
 
     [Header("Key Binds")] //maybe in settings this'll be changable(eventually)?
@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     [Header ("Jumping")]
     public float jumpForce;
     public float jumpCD;
-    bool readyToJump = true;
+    [SerializeField] bool readyToJump = true;
     bool readyToDoubleJump = true;
 
     [Header("Diving")]
@@ -45,9 +45,11 @@ public class PlayerController : MonoBehaviour
         get { return _grounded; } 
         set //basically just resets double jump and dive cd when youre grounded
         {
+            //Debug.Log("set run, NOT the if statement");
             if(_grounded == false && value == true) //if grounded value changes to true
             {
-                Debug.Log("grounded set to true");
+                //Debug.Log("set IF statement ran");
+                //Debug.Log("grounded set to true");
                 AirborneCooldownResets();
             }
             _grounded = value; //set "_grounded" value to "grounded"
@@ -56,6 +58,7 @@ public class PlayerController : MonoBehaviour
 
     [Header ("Assigned Objects")]
     public Transform orientation;
+    public Transform playerObject; //currently just a fallback, rarely used
 
     private float horizontalInput;
     private float verticalInput;
@@ -75,7 +78,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        grounded = Physics.Raycast(transform.position, -transform.up, playerHeight * 0.5f + 0.2f, whatIsGround); //ground check
+        grounded = Physics.Raycast(transform.position, -transform.up, playerHeight * 0.5f + 0.3f, whatIsGround); //ground check
 
         MyInput();
         //SpeedControl();
@@ -130,15 +133,23 @@ public class PlayerController : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
 
-        if(Input.GetKey(jumpKey) && readyToJump && grounded) //grounded jump check 
+        if (Input.GetKey(jumpKey) && readyToJump && grounded) //grounded jump check 
         {
             readyToJump = false;
             Jump(); //jump (wow)
 
             Invoke(nameof(ResetJump), jumpCD); //jumpCD
         }
+        else if (Input.GetKeyDown(jumpKey) && readyToDoubleJump && readyToJump) //definitely a better way i couldve scripted this
+        {
+            //Debug.Log("double jumped");
+            readyToDoubleJump = false;
+            Jump(); //jump (wow, again!)
 
-        if(Input.GetKey(diveKey) && readyToDive && !grounded)
+            Invoke(nameof(ResetJump), jumpCD);
+        }
+
+        if (Input.GetKey(diveKey) && readyToDive && !grounded)
         {
             readyToDive = false;
 
@@ -177,15 +188,22 @@ public class PlayerController : MonoBehaviour
 
     private void ResetJump() //after whatever timer/method used to invoke, jump cd off
     {
-        readyToJump = !readyToJump;
+        readyToJump = true; //note to self dont set bools to "!bool" for stuff anymore or itll bug
     }
 
     private void Dive()
     {
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z); //cancel any vertical velocity
 
-        Debug.Log("Dive called");
-        rb.AddForce((transform.forward + (transform.up * 0.5f)).normalized * diveForce, ForceMode.Impulse); //dive; i think the axis i put should work for a dive direction but im not sure and i cant check while im writing this. 
+        //Debug.Log("Dive called");
+
+        Vector3 moveDirec = moveDir;
+        if(moveDirec == Vector3.zero)
+        {
+            Debug.LogWarning("moveDir at 0, fallback to playerObj");
+            moveDirec = playerObject.forward;
+        }
+        rb.AddForce((moveDirec + (transform.up * 0.6f)).normalized * diveForce, ForceMode.Impulse); //
     }
 
     public void AirborneCooldownResets() //generic reset for dive and djump. this will probably be used in a few places so im making a reset for this here.
