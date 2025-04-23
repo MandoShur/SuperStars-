@@ -693,8 +693,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _grounded: 0
+  _isPaused: 0
   jumpKey: 32
   diveKey: 101
+  pauseKey: 13
   moveSpeed: 15
   groundDrag: 5
   airMovementMulti: 1

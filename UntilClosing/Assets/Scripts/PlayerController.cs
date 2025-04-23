@@ -8,10 +8,12 @@ public class PlayerController : MonoBehaviour
     //unaccessables and things youre not supposed to edit at all DO NOT EDIT THESE OR YOU EXPLODE VIOLENTLY(and code messes up but thats not important)
     [SerializeField] private bool _grounded; 
     private float baseGravityScale;
+    [SerializeField] private bool _isPaused = false;
 
     [Header("Key Binds")] //maybe in settings this'll be changable(eventually)?
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode diveKey = KeyCode.E;
+    public KeyCode pauseKey = KeyCode.Escape;
 
 
     [Header ("Movement")]
@@ -36,6 +38,7 @@ public class PlayerController : MonoBehaviour
     [Header("Diving")]
     public float diveForce;
     bool readyToDive = true;
+    bool isInDiveState = true;
 
     [Header ("Grounded Check")]
     public float playerHeight;
@@ -60,6 +63,8 @@ public class PlayerController : MonoBehaviour
     public Transform orientation;
     public Transform playerObject; //currently just a fallback, rarely used
 
+    //Other bools
+
     private float horizontalInput;
     private float verticalInput;
 
@@ -67,8 +72,27 @@ public class PlayerController : MonoBehaviour
 
     public Rigidbody rb; //this is just public so debugging script can catch it
 
+    bool isPaused
+    {
+        get { return _isPaused; }
+        set
+        {
+            if(isPaused == true)
+            {
+                Time.timeScale = 0f;
+                _isPaused = isPaused;
+            }
+            else if(isPaused == true)
+            {
+                Time.timeScale = 1f;
+                _isPaused = isPaused;
+            }
+        }
+    }
+
     private void Start()
     {
+        Time.timeScale = 1f;
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         rb.useGravity = false; //disables gravity, using custom gravity
@@ -112,7 +136,7 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(Physics.gravity * gravityScale, ForceMode.Acceleration); //if y velocity falls below float, increase gravity to make jump less floaty
             if(rb.velocity.y < TerminalVelo) //if, in increased gravity, terminal velocity is reached (i think -14) begin to increase gravity overtime 
             {
-                //Debug.Log("coroutine started");
+                Debug.Log("coroutine started");
                 StartCoroutine(FallFaster()); //small(kinda redundant) note, the camera gets really zoomed out if you fall for longer than like 2.5 seconds, but if youre falling for that long you probably fell off the map 
             }
         }
@@ -133,23 +157,29 @@ public class PlayerController : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
 
-        if (Input.GetKey(jumpKey) && readyToJump && grounded) //grounded jump check 
+        if (Input.GetKeyDown(pauseKey))
         {
+            isPaused = !isPaused;
+        }
+
+        if (Input.GetKey(jumpKey) && readyToJump && grounded && !isPaused) //grounded jump check 
+        {
+            Debug.Log("jumpCalled");
             readyToJump = false;
             Jump(); //jump (wow)
 
             Invoke(nameof(ResetJump), jumpCD); //jumpCD
         }
-        else if (Input.GetKeyDown(jumpKey) && readyToDoubleJump && readyToJump) //definitely a better way i couldve scripted this
+        else if (Input.GetKeyDown(jumpKey) && readyToDoubleJump && readyToJump && !isPaused) //definitely a better way i couldve scripted this
         {
-            //Debug.Log("double jumped");
+            Debug.Log("double jumped");
             readyToDoubleJump = false;
             Jump(); //jump (wow, again!)
 
             Invoke(nameof(ResetJump), jumpCD);
         }
 
-        if (Input.GetKey(diveKey) && readyToDive && !grounded)
+        if (Input.GetKey(diveKey) && readyToDive && !grounded && !isPaused)
         {
             readyToDive = false;
 
@@ -195,7 +225,7 @@ public class PlayerController : MonoBehaviour
     {
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z); //cancel any vertical velocity
 
-        //Debug.Log("Dive called");
+        Debug.Log("Dive called");
 
         Vector3 moveDirec = moveDir;
         if(moveDirec == Vector3.zero)
