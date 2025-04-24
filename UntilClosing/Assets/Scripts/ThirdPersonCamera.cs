@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/* script for turning playerObject towards input direction relative to camera 
- * so if i press "d" object will turn to face right from the camera, and if i move camera and do it again itll face right from camera view again
+/* script for turning playerObject towards input direction relative to camera
+ * so if i press "d" object will turn to face right from the camera pov, and if i move camera and do it again itll face right from camera view again
  * why this script was made to go on the camera itself and not the player idrk, but im just following a tutorial (im not just copying it i swear)*/
 
 public class ThirdPersonCamera : MonoBehaviour
@@ -32,7 +32,7 @@ public class ThirdPersonCamera : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
         Vector3 inputDir = orientation.forward * verticalInput + orientation.right * horizontalInput; //inputs into a vector using orientation
 
-        if(inputDir != Vector3.zero) //if input
+        if(inputDir != Vector3.zero) //if input found
         {
             //slerps playerObj to face towards the input direction in above line by rotSpeed * time.delta
             playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);

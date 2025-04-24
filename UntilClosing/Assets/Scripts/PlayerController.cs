@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     public float gravityScale = 8.5f;
     public float VerticalVelocityThreshold = 1.4f;
     public float AccelerationRate = 0.2f;
-    private float TerminalVelo = -14f; //this should be in unaccessables but idc!!!
+    private float TerminalVelo = -7f; //this should be in unaccessables but idc!!! WAS AT 14   
 
 
 
@@ -63,36 +63,38 @@ public class PlayerController : MonoBehaviour
     public Transform orientation;
     public Transform playerObject; //currently just a fallback, rarely used
 
-    //Other bools
+    [Header ("Script References")]
+    public GameManager gameManager;
+    //If you can't find the script in scene, right click script in project window and select "Find References In Scene," brings up objects with and referencing it.
 
+    //other misc or random variables
     private float horizontalInput;
     private float verticalInput;
 
     Vector3 moveDir;
 
-    public Rigidbody rb; //this is just public so debugging script can catch it
+    public Rigidbody rb; //this is just public so debugging script can catch it :p
 
     bool isPaused
     {
         get { return _isPaused; }
         set
         {
-            if(isPaused == true)
+            _isPaused = value;
+            if(_isPaused == true)
             {
-                Time.timeScale = 0f;
-                _isPaused = isPaused;
+                gameManager.GMPause(true);
             }
-            else if(isPaused == true)
+            else
             {
-                Time.timeScale = 1f;
-                _isPaused = isPaused;
+                gameManager.GMPause(false);
             }
         }
     }
 
     private void Start()
     {
-        Time.timeScale = 1f;
+        Time.timeScale = 1f; //forgot this remnant was here, im hijacking this for debugging
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         rb.useGravity = false; //disables gravity, using custom gravity
@@ -110,7 +112,6 @@ public class PlayerController : MonoBehaviour
         if (grounded) //dynamic drag system, though it isnt really doing anything atm since both are set to grounddrag (redundant)
         {
             rb.drag = groundDrag;
-            readyToDive = true;
         } 
         else //airborne drag
         {
@@ -157,9 +158,10 @@ public class PlayerController : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
 
-        if (Input.GetKeyDown(pauseKey))
+        if (Input.GetKeyDown(pauseKey)) //pause menu check
         {
             isPaused = !isPaused;
+            Debug.Log("isPaused = " + isPaused);
         }
 
         if (Input.GetKey(jumpKey) && readyToJump && grounded && !isPaused) //grounded jump check 

@@ -31,5 +31,10 @@ public class ShowSpeed : MonoBehaviour
             lowestYVelo = playerRb.velocity.y;
         }
     }
+
+    private void Update()
+    {
+    
+    }
 }
-//this is more of a debugging script than anything
+//this is more of a debugging script than anything, not gonna comment on this since its just whatever
