@@ -67,14 +67,12 @@ public class PlayerController : MonoBehaviour
     public GameManager gameManager;
     //If you can't find the script in scene, right click script in project window and select "Find References In Scene," brings up objects with and referencing it.
 
-    //other misc or random variables
+    [Header ("hidden variables")] //only for debugging
     private float horizontalInput;
     private float verticalInput;
-
+    private float deathYThreshold = 30f;
     Vector3 moveDir;
-
     public Rigidbody rb; //this is just public so debugging script can catch it :p
-
     bool isPaused
     {
         get { return _isPaused; }
@@ -91,6 +89,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+    [HideInInspector] public bool isDead;
 
     private void Start()
     {
@@ -124,6 +123,16 @@ public class PlayerController : MonoBehaviour
         MovePlayer();
 
         GravityForce();
+
+        if (transform.position.y < -deathYThreshold && isDead == false)
+        {
+            gameManager.OnDeath();
+            isDead = true;
+            Debug.Log("PlayerController Death Called");
+        }
+        {
+            Debug.Log("isDead = " + isDead);
+        }
     }
 
     private void GravityForce() //essentially just gravity handling

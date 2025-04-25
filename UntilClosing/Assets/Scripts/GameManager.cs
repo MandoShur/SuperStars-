@@ -4,21 +4,29 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour     //ooo a gear icon so cool
 {
     [Header("UI Scripts")]
     public PauseMenu pauseMenu;
 
     [Header("UI Elements")]
     public TextMeshProUGUI timerText;
+    public GameObject goalUIScreen;
+    public TextMeshProUGUI goalTimer;
 
     [Header("PlayerController")]
     public PlayerController playerController;
 
-    //variables not in inspector *very important*
-    float timeElapsed;
+    [Header("Goal Object")]
+    public GameObject goal;
 
-    //ooo a gear icon so cool
+    [Header("Checkpoint Objects")]
+    public GameObject[] checkPObjects;
+
+    [Header("hidden variables")] //this should not show in inspector unless debugging
+    private int currentCheckpoint; //should start at 0, aka start of level
+    float timeElapsed;
+    private float finishTime; //holder float value for timer display at goal end
 
     // Start is called before the first frame update
     void Start()
@@ -63,5 +71,30 @@ public class GameManager : MonoBehaviour
         {
 
         }
+    }
+
+    public void OnGoalSuccess()
+    {
+        goalUIScreen.SetActive(true);
+        finishTime = timeElapsed;
+        
+        int minutes = Mathf.FloorToInt(finishTime / 60);
+        int seconds = Mathf.FloorToInt(finishTime % 60);
+        int milliseconds = Mathf.FloorToInt((finishTime % 1) * 1000);
+        goalTimer.text = string.Format("{0:00}:{1:00}:{2:000}", minutes, seconds, milliseconds); //theres a better way i couldve done this but idc
+    }
+
+    public void OnDeath()
+    {
+        //Death VFX here
+        Invoke(nameof(PlayerCheckpointReset), 2f);
+    }
+
+    public void PlayerCheckpointReset()
+    {
+        playerController.gameObject.transform.position = Vector3.up;
+        playerController.gameObject.GetComponentInChildren<CapsuleCollider>().gameObject.transform.rotation = Quaternion.identity;
+        playerController.isDead = false;
+        Debug.Log("after teleport, isdead = " + playerController.isDead);
     }
 }
