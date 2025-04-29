@@ -72,7 +72,7 @@ public class PlayerController : MonoBehaviour
     private float verticalInput;
     private float deathYThreshold = 30f;
     Vector3 moveDir;
-    public Rigidbody rb; //this is just public so debugging script can catch it :p
+    [HideInInspector] public Rigidbody rb; //this is just public so debugging script can catch it UPDATE: this is now hidden in inspector!! yay
     bool isPaused
     {
         get { return _isPaused; }
