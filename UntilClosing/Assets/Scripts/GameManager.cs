@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour     //ooo a gear icon so cool
     [Header("hidden variables")] //this should not show in inspector unless debugging
     private int currentCheckpoint; //should start at 0, aka start of level
     float timeElapsed;
+    private bool isVictorious;
     private float finishTime; //holder float value for timer display at goal end
 
     // Start is called before the first frame update
@@ -43,11 +44,11 @@ public class GameManager : MonoBehaviour     //ooo a gear icon so cool
 
     public void GMPause(bool input)
     {
-        if(input)
+        if(input && !isVictorious)
         {
             pauseMenu.PauseGame();
         }
-        else if (!input)
+        else if (!input && !isVictorious)
         {
             pauseMenu.ResumeGame();
         }

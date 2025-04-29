@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     public float gravityScale = 8.5f;
     public float VerticalVelocityThreshold = 1.4f;
     public float AccelerationRate = 0.2f;
-    private float TerminalVelo = -7f; //this should be in unaccessables but idc!!! WAS AT 14   
+    private float TerminalVelo = -7f; //this should be in unaccessables but idc!!! WAS AT -14 now is at -7
 
 
 
@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
     [Header("Diving")]
     public float diveForce;
     bool readyToDive = true;
-    bool isInDiveState = true;
+    //bool isInDiveState = true; likely will remain unused for a long time
 
     [Header ("Grounded Check")]
     public float playerHeight;
