@@ -21,6 +21,8 @@ public class PauseMenu : MonoBehaviour
         pauseMenuUI.SetActive(false);
         blackBG.SetActive(false);
         Time.timeScale = 1f; // resume time
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         //isPaused = false;
     }
 
@@ -29,6 +31,8 @@ public class PauseMenu : MonoBehaviour
         pauseMenuUI.SetActive(true);
         blackBG.SetActive(true);
         Time.timeScale = 0f; // pause time
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         //isPaused = true;
     }
 

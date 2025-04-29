@@ -77,12 +77,14 @@ public class GameManager : MonoBehaviour     //ooo a gear icon so cool
     public void OnGoalSuccess()
     {
         goalUIScreen.SetActive(true);
+        timerText.gameObject.SetActive(false);
         finishTime = timeElapsed;
+        Time.timeScale = 0.0f;
         
         int minutes = Mathf.FloorToInt(finishTime / 60);
         int seconds = Mathf.FloorToInt(finishTime % 60);
         int milliseconds = Mathf.FloorToInt((finishTime % 1) * 1000);
-        goalTimer.text = string.Format("{0:00}:{1:00}:{2:000}", minutes, seconds, milliseconds); //theres a better way i couldve done this but idc
+        goalTimer.text = new string("Final Time: " + timerText.text);//string.Format("Final Time: {0:00}:{1:00}:{2:000}", minutes, seconds, milliseconds); //theres a better way i couldve done this but idc
     }
 
     public void OnDeath()

@@ -11,6 +11,8 @@ public class GoalScript : MonoBehaviour
         if(other.gameObject.tag == "Player")
         {
             OnTrigger?.Invoke();
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
             Debug.Log("goal triggered");
             
         }

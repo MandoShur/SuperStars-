@@ -34,7 +34,7 @@ public class ShowSpeed : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log("isDead = " + playerController.isDead);
+        //Debug.Log("isDead = " + playerController.isDead);
     }
 }
 //this is more of a debugging script than anything, not gonna comment on this since its just whatever
