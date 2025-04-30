@@ -27,6 +27,10 @@ public class PlayerController : MonoBehaviour
     public float AccelerationRate = 0.2f;
     private float TerminalVelo = -7f; //this should be in unaccessables but idc!!! WAS AT -14 now is at -7
 
+    [Header("Blob Shadow")] //so i didnt realize until like super late how important this was 
+    public GameObject shadow;
+    public RaycastHit shadowHit;
+    public float sdwOffset;
 
 
     [Header ("Jumping")]
@@ -133,6 +137,21 @@ public class PlayerController : MonoBehaviour
             MovePlayer();
         }
 
+        /*Ray downRay = new Ray(new Vector3(this.transform.position.x, this.transform.position.y - sdwOffset, this.transform.position.z), -Vector3.up);
+
+        //gets the hit from the raycast and converts it unto a vector3
+        Vector3 hitPosition = shadowHit.point;
+        //transofrm the shadow to the location
+        shadow.transform.position = hitPosition;
+
+        //Cast a ray straight downwards, reads back where it lands (this is optional but reccomended)
+        if (Physics.Raycast(downRay, out shadowHit))
+        {
+            print(shadowHit.transform);
+        }*/
+
+        Shadow();
+
         GravityForce();
     }
 
@@ -161,6 +180,18 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
         gravityScale = AccelerationRate + gravityScale;
+    }
+
+    private void Shadow()
+    {
+        Ray downRay = new Ray(new Vector3(this.transform.position.x, this.transform.position.y - sdwOffset, this.transform.position.z), -Vector3.up);
+        Physics.Raycast(downRay, out shadowHit);
+
+        //gets the hit from the raycast and converts it unto a vector3
+        Vector3 hitPosition = shadowHit.point;
+        //transofrm the shadow to the location
+        shadow.transform.position = hitPosition;
+
     }
 
     void MyInput()
