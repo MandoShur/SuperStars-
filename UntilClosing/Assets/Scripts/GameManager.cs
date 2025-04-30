@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour     //ooo a gear icon so cool
     public GameObject[] checkPObjects;
 
     [Header("hidden variables")] //this should not show in inspector unless debugging
-    private int currentCheckpoint; //should start at 0, aka start of level
+    public int currentCheckpoint = 0; //should start at 0, aka start of level
     float timeElapsed;
     private bool isVictorious;
     private float finishTime; //holder float value for timer display at goal end
@@ -74,17 +74,14 @@ public class GameManager : MonoBehaviour     //ooo a gear icon so cool
         }
     }
 
-    public void OnGoalSuccess()
+    public void OnGoalSuccess() //brings up goal gui, freezes like everything and displays final time of that level
     {
         goalUIScreen.SetActive(true);
         timerText.gameObject.SetActive(false);
         finishTime = timeElapsed;
         Time.timeScale = 0.0f;
         
-        int minutes = Mathf.FloorToInt(finishTime / 60);
-        int seconds = Mathf.FloorToInt(finishTime % 60);
-        int milliseconds = Mathf.FloorToInt((finishTime % 1) * 1000);
-        goalTimer.text = new string("Final Time: " + timerText.text);//string.Format("Final Time: {0:00}:{1:00}:{2:000}", minutes, seconds, milliseconds); //theres a better way i couldve done this but idc
+        goalTimer.text = new string("Final Time: " + timerText.text);
     }
 
     public void OnDeath()
@@ -93,11 +90,18 @@ public class GameManager : MonoBehaviour     //ooo a gear icon so cool
         Invoke(nameof(PlayerCheckpointReset), 2f);
     }
 
-    public void PlayerCheckpointReset()
+    public void PlayerCheckpointReset() //resets player to current checkpoint (btw make sure checkpoint 0 is at the start of the level!!) this is only used after death
     {
-        playerController.gameObject.transform.position = Vector3.up;
-        playerController.gameObject.GetComponentInChildren<CapsuleCollider>().gameObject.transform.rotation = Quaternion.identity;
+
+        playerController.gameObject.transform.position = checkPObjects[currentCheckpoint].transform.position;
+        playerController.gameObject.GetComponentInChildren<CapsuleCollider>().gameObject.transform.rotation = checkPObjects[(currentCheckpoint)].transform.rotation;
         playerController.isDead = false;
-        Debug.Log("after teleport, isdead = " + playerController.isDead);
+        //Debug.Log("after teleport, isdead = " + playerController.isDead);
+    }
+    
+    public void ChangeCheckpoint(int value) //checkpoint flag handling, checkpoints call this (with an integer) using a unityevent
+    {
+        if (value <= currentCheckpoint) return;
+        currentCheckpoint = value;
     }
 }

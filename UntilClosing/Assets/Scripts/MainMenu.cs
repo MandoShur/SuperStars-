@@ -13,7 +13,7 @@ public class MainMenu : MonoBehaviour
     }
 
    
-    public void OpenOptions()
+    public void OpenOptions() //redundant
     {
         UnityEngine.Debug.Log("Options Menu Opened");
     }

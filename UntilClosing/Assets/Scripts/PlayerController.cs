@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour
 
     [Header ("Script References")]
     public GameManager gameManager;
-    //If you can't find the script in scene, right click script in project window and select "Find References In Scene," brings up objects with and referencing it.
+    //if you can't find the script in scene, right click script in project window and select "Find References In Scene," brings up objects with and referencing it.
 
     [Header ("hidden variables")] //only for debugging
     private float horizontalInput;
@@ -73,7 +73,7 @@ public class PlayerController : MonoBehaviour
     private float deathYThreshold = 30f;
     Vector3 moveDir;
     [HideInInspector] public Rigidbody rb; //this is just public so debugging script can catch it UPDATE: this is now hidden in inspector!! yay
-    bool isPaused
+    bool isPaused //yea
     {
         get { return _isPaused; }
         set
@@ -89,14 +89,14 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    [HideInInspector] public bool isDead;
+    public bool isDead;
 
     private void Start()
     {
         Time.timeScale = 1f; //forgot this remnant was here, im hijacking this for debugging
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-        rb.useGravity = false; //disables gravity, using custom gravity
+        rb.useGravity = false; //disables gravity, bc using custom gravity
 
         baseGravityScale = gravityScale; //establishing base gravity
     }
@@ -105,10 +105,18 @@ public class PlayerController : MonoBehaviour
     {
         grounded = Physics.Raycast(transform.position, -transform.up, playerHeight * 0.5f + 0.3f, whatIsGround); //ground check
 
+
+        if (transform.position.y < -deathYThreshold || Input.GetKeyDown(KeyCode.R) && isDead == false) //death conditionals
+        {
+            gameManager.OnDeath();
+            isDead = true;
+            Debug.Log("PlayerController Death Called");
+        }
+
         MyInput();
         //SpeedControl();
 
-        if (grounded) //dynamic drag system, though it isnt really doing anything atm since both are set to grounddrag (redundant)
+        if (grounded) //dynamic drag system, though it isnt really doing anything atm since both are set to grounddrag (redundant pmuch)
         {
             rb.drag = groundDrag;
         } 
@@ -120,19 +128,12 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        MovePlayer();
+        if (!isDead)
+        {
+            MovePlayer();
+        }
 
         GravityForce();
-
-        if (transform.position.y < -deathYThreshold && isDead == false)
-        {
-            gameManager.OnDeath();
-            isDead = true;
-            Debug.Log("PlayerController Death Called");
-        }
-        {
-            Debug.Log("isDead = " + isDead);
-        }
     }
 
     private void GravityForce() //essentially just gravity handling
@@ -150,7 +151,7 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(FallFaster()); //small(kinda redundant) note, the camera gets really zoomed out if you fall for longer than like 2.5 seconds, but if youre falling for that long you probably fell off the map 
             }
         }
-        if(rb.velocity.y >= -0.1f) //if gravity is above baseline minus a bit (not falling) reset gravity to original gravity
+        if(rb.velocity.y >= -0.1f) //if gravity is above baseline minus a bit (aka not falling) reset gravity to original gravity
         {
             gravityScale = baseGravityScale;
         }
@@ -239,12 +240,12 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Dive called");
 
         Vector3 moveDirec = moveDir;
-        if(moveDirec == Vector3.zero)
+        if(moveDirec == Vector3.zero) //if player isnt moving the dive wouldnt go anywhere, so it defaults to just going forward from playerobj
         {
             Debug.LogWarning("moveDir at 0, fallback to playerObj");
             moveDirec = playerObject.forward;
         }
-        rb.AddForce((moveDirec + (transform.up * 0.6f)).normalized * diveForce, ForceMode.Impulse); //
+        rb.AddForce((moveDirec + (transform.up * 0.6f)).normalized * diveForce, ForceMode.Impulse); //dive
     }
 
     public void AirborneCooldownResets() //generic reset for dive and djump. this will probably be used in a few places so im making a reset for this here.

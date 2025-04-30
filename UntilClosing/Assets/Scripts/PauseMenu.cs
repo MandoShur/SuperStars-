@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 
 public class PauseMenu : MonoBehaviour
@@ -11,12 +12,7 @@ public class PauseMenu : MonoBehaviour
     public GameObject blackBG;
     //private bool isPaused = false;
 
-    void Update()
-    {
-        
-    }
-
-    public void ResumeGame()
+    public void ResumeGame() //resumes the game
     {
         pauseMenuUI.SetActive(false);
         blackBG.SetActive(false);
@@ -26,7 +22,7 @@ public class PauseMenu : MonoBehaviour
         //isPaused = false;
     }
 
-    public void PauseGame()
+    public void PauseGame() //pauses the game, shocking
     {
         pauseMenuUI.SetActive(true);
         blackBG.SetActive(true);
@@ -34,6 +30,11 @@ public class PauseMenu : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         //isPaused = true;
+    }
+
+    public void ReturnToMainMenu()
+    {
+        SceneManager.LoadScene("Main Menu");
     }
 
 }

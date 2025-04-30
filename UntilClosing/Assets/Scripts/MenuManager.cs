@@ -5,7 +5,8 @@ using UnityEngine;
 public class MenuManager : MonoBehaviour
 {
     public GameObject mainMenuPanel; 
-    public GameObject playMenuPanel; 
+    public GameObject playMenuPanel;
+    public GameObject settingsMenuPanel;
 
     // Show the Play Menu and hide the Main Menu
     public void OpenPlayMenu()
@@ -19,5 +20,10 @@ public class MenuManager : MonoBehaviour
     {
         mainMenuPanel.SetActive(true);
         playMenuPanel.SetActive(false);
+    }
+
+    public void ToggleSettings() 
+    {
+        settingsMenuPanel.SetActive(!settingsMenuPanel.activeSelf); //this probably has a shorthand right? either way i like this line
     }
 }

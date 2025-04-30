@@ -8,7 +8,7 @@ public class GoalScript : MonoBehaviour
     public UnityEvent OnTrigger;
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "Player")
+        if(other.gameObject.tag == "Player") //if player collides game wins, look at gameManager for more details
         {
             OnTrigger?.Invoke();
             Cursor.lockState = CursorLockMode.None;
