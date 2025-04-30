@@ -1,18 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Events;
 using UnityEngine;
 
 public class GoalScript : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public UnityEvent OnTrigger;
+    private void OnTriggerEnter(Collider other)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if(other.gameObject.tag == "Player") //if player collides game wins, look at gameManager for more details
+        {
+            OnTrigger?.Invoke();
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Debug.Log("goal triggered");
+            
+        }
     }
 }
