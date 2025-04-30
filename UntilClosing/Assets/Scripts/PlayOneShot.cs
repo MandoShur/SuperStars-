@@ -6,7 +6,7 @@ public class PlayOneShot : MonoBehaviour
 {
     //i love playoneshot and unityevents!!!
 
-    public AudioClip audio;
+    public AudioClip audioClip;
     AudioSource audioSource;
 
     private void Start()
@@ -15,6 +15,6 @@ public class PlayOneShot : MonoBehaviour
     }
     public void PlayOneShotMethod()
     {
-        audioSource.PlayOneShot(audio, 1);
+        audioSource.PlayOneShot(audioClip, 1);
     }
 }
