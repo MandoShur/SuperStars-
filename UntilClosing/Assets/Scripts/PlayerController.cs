@@ -71,9 +71,14 @@ public class PlayerController : MonoBehaviour
     public GameManager gameManager;
     //if you can't find the script in scene, right click script in project window and select "Find References In Scene," brings up objects with and referencing it.
 
+    [Header("Animation")]
+    public Animator animator;
+    public AnimationClip runAnim;
+    public AnimationClip jumpAnim;
+
     [Header ("hidden variables")] //only for debugging
-    private float horizontalInput;
-    private float verticalInput;
+    public float horizontalInput;
+    public float verticalInput;
     private float deathYThreshold = 30f;
     Vector3 moveDir;
     [HideInInspector] public Rigidbody rb; //this is just public so debugging script can catch it UPDATE: this is now hidden in inspector!! yay
@@ -94,6 +99,12 @@ public class PlayerController : MonoBehaviour
         }
     }
     public bool isDead;
+    public ANIMATIONSTATE animState;
+
+    public enum ANIMATIONSTATE
+    {
+        RUNNING, IDLE, DIVING, JUMPING
+    }
 
     private void Start()
     {
@@ -115,6 +126,11 @@ public class PlayerController : MonoBehaviour
             gameManager.OnDeath();
             isDead = true;
             Debug.Log("PlayerController Death Called");
+        }
+
+        if (rb.velocity.y < -0.7f && grounded == false)
+        {
+            animator.SetTrigger("isFalling");
         }
 
         MyInput();
@@ -199,6 +215,16 @@ public class PlayerController : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
 
+        if(horizontalInput == 0 && verticalInput == 0 && grounded)
+        {
+            animator.SetTrigger("isIdle");
+        }
+        else if((horizontalInput > 0 || verticalInput > 0) && rb.velocity.y < 0.02f && grounded) 
+        {
+            animator.SetTrigger("isRunning");
+            Debug.Log("running triggered");
+        }
+
         if (Input.GetKeyDown(pauseKey)) //pause menu check
         {
             isPaused = !isPaused;
@@ -207,6 +233,8 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKey(jumpKey) && readyToJump && grounded && !isPaused) //grounded jump check 
         {
+            animator.SetTrigger("isJumping");
+
             Debug.Log("jumpCalled");
             readyToJump = false;
             Jump(); //jump (wow)
@@ -215,6 +243,8 @@ public class PlayerController : MonoBehaviour
         }
         else if (Input.GetKeyDown(jumpKey) && readyToDoubleJump && readyToJump && !isPaused) //definitely a better way i couldve scripted this
         {
+            animator.Play("Jumping");
+
             Debug.Log("double jumped");
             readyToDoubleJump = false;
             Jump(); //jump (wow, again!)
@@ -234,11 +264,7 @@ public class PlayerController : MonoBehaviour
     {
         moveDir = orientation.forward * verticalInput + orientation.right * horizontalInput; //at one point i had vertical and horizontal inputs swapped lol
 
-        if(grounded)
-            rb.AddForce(moveDir.normalized * moveSpeed * 10f, ForceMode.Acceleration);
-
-        else if(!grounded)
-            rb.AddForce(moveDir.normalized * moveSpeed * 10f * airMovementMulti, ForceMode.Force); //this is probably gonna become redundant (it has)
+        rb.AddForce(moveDir.normalized * moveSpeed * 10f, ForceMode.Acceleration);
     }
 
     /*private void SpeedControl() //this is most likely going to be heavily changed later. or be redundant.
@@ -266,6 +292,8 @@ public class PlayerController : MonoBehaviour
 
     private void Dive()
     {
+        animator.SetTrigger("isDiving");
+
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z); //cancel any vertical velocity
 
         Debug.Log("Dive called");
@@ -277,6 +305,7 @@ public class PlayerController : MonoBehaviour
             moveDirec = playerObject.forward;
         }
         rb.AddForce((moveDirec + (transform.up * 0.6f)).normalized * diveForce, ForceMode.Impulse); //dive
+
     }
 
     public void AirborneCooldownResets() //generic reset for dive and djump. this will probably be used in a few places so im making a reset for this here.
