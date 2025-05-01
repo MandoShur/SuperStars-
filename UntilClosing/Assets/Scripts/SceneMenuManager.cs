@@ -22,4 +22,9 @@ public class SceneMenuManager : MonoBehaviour
     {
         SceneManager.LoadScene("SceneThree"); 
     }
+
+    public void LoadSceneEnding()
+    {
+        SceneManager.LoadScene("Ending");
+    }
 }
